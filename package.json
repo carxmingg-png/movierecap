@@ -1,0 +1,10 @@
+{
+  "name": "ai-recap-studio",
+  "version": "1.0.0",
+  "description": "AI Recap Studio",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo No build required",
+    "start": "npx serve ."
+  }
+}
