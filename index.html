@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0c10">
   <title>AI Recap Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -26,7 +28,7 @@
           <strong>Your studio</strong>
           <p>Private workspace</p>
           <div class="plan-line"><i></i></div>
-          <small>Local prototype · No cloud processing yet</small>
+          <small>AI-powered · AssemblyAI + OpenRouter</small>
         </div>
         <button class="nav-item" data-page="settings"><span>⚙</span> Settings</button>
         <div class="profile">
@@ -41,15 +43,27 @@
       <header class="topbar">
         <button class="mobile-menu" id="mobileMenu" aria-label="Toggle menu">☰</button>
         <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="crumb">Overview</strong></div>
-        <div class="top-actions"><span class="status-dot"></span><span class="status-text">Prototype mode</span><button class="icon-button" title="Notifications">♧</button></div>
+        <div class="top-actions">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-text" id="statusText">Ready</span>
+          <button class="icon-button" title="Notifications" id="notifBtn">♧</button>
+        </div>
       </header>
 
+      <!-- API KEY WARNING BANNER -->
+      <div class="api-warning" id="apiWarning" style="display:none">
+        <span>⚠</span>
+        <div><strong>API keys not configured</strong><p>Add your AssemblyAI and OpenRouter keys in <button class="inline-button" data-go="settings">Settings</button> to use AI features.</p></div>
+        <button class="close-warning" id="closeWarning">✕</button>
+      </div>
+
+      <!-- ═══════════════════════════════ OVERVIEW PAGE ═══════════════════════════════ -->
       <section class="page active" id="page-overview">
         <div class="hero">
           <div class="hero-copy">
             <div class="eyebrow"><span></span> YOUR AI STORYTELLING WORKSPACE</div>
             <h1>Turn movies into<br><em>stories worth watching.</em></h1>
-            <p>Create cinematic movie recaps in Burmese or English, with AI narration and TikTok-ready exports.</p>
+            <p>Create cinematic movie recaps in Burmese or English, with AI transcription and TikTok-ready exports.</p>
             <button class="primary-button" data-go="create">＋ Create a new recap <span>↗</span></button>
           </div>
           <div class="hero-art">
@@ -68,71 +82,404 @@
           <button class="text-button" data-go="projects">View all projects <span>→</span></button>
         </div>
         <div class="stats-grid">
-          <article class="stat-card"><span class="stat-icon purple">▣</span><span class="stat-label">Total projects</span><strong id="totalProjects">02</strong><small>In your workspace</small></article>
+          <article class="stat-card"><span class="stat-icon purple">▣</span><span class="stat-label">Total projects</span><strong id="totalProjects">00</strong><small>In your workspace</small></article>
           <article class="stat-card"><span class="stat-icon gold">◷</span><span class="stat-label">In progress</span><strong id="activeProjects">00</strong><small>Processing jobs</small></article>
-          <article class="stat-card"><span class="stat-icon green">▶</span><span class="stat-label">Ready to export</span><strong id="readyProjects">01</strong><small>Prototype sample</small></article>
+          <article class="stat-card"><span class="stat-icon green">▶</span><span class="stat-label">Ready to export</span><strong id="readyProjects">00</strong><small>Scripts generated</small></article>
         </div>
 
         <div class="section-heading project-heading">
           <div><div class="eyebrow muted">PICK UP WHERE YOU LEFT OFF</div><h2>Recent projects</h2></div>
-          <span class="subtle-label">UPDATED JUST NOW</span>
+          <span class="subtle-label" id="lastUpdated">NO PROJECTS YET</span>
         </div>
         <div class="project-grid" id="recentProjects">
-          <article class="project-card sample-card">
-            <div class="poster poster-one"><span>PROJECT 001</span><strong>THE LAST<br>KINGDOM</strong><small>STORY RECAP</small></div>
-            <div class="project-info"><div><strong>The Last Kingdom</strong><span>English · 5–10 min</span></div><span class="pill ready">Ready</span></div>
-            <div class="project-meta"><span>Vertical · 1080 × 1920</span><button class="more-button" aria-label="More">•••</button></div>
-          </article>
-          <article class="project-card sample-card">
-            <div class="poster poster-two"><span>PROJECT 002</span><strong>SHADOWS<br>OF THE PAST</strong><small>SHORT RECAP</small></div>
-            <div class="project-info"><div><strong>Shadows of the Past</strong><span>မြန်မာ · 1–3 min</span></div><span class="pill draft">Draft</span></div>
-            <div class="project-meta"><span>Script not generated</span><button class="more-button" aria-label="More">•••</button></div>
-          </article>
           <button class="new-project-card" data-go="create"><span>＋</span><strong>Start a new story</strong><small>Bring a movie into your studio</small></button>
         </div>
-        <div class="notice"><span>ⓘ</span><div><strong>Prototype preview</strong><p>This is the first interface milestone. Movie analysis, AI script generation, voice generation and cloud rendering are not connected yet.</p></div></div>
       </section>
 
-      <section class="page" id="page-create">
-        <div class="page-title"><div class="eyebrow muted">NEW PROJECT</div><h1>Create a recap</h1><p>Choose your source and storytelling settings. Your project will be prepared for the AI production pipeline.</p></div>
-        <div class="form-layout">
-          <div class="form-panel">
-            <div class="panel-title"><span class="step-number">01</span><div><h3>Choose your movie</h3><p>Upload a video file or provide a supported link.</p></div></div>
-            <div class="source-tabs"><button class="source-tab selected" data-source="upload">Upload file</button><button class="source-tab" data-source="link">Movie link</button></div>
-            <div class="upload-zone" id="uploadZone">
-              <input type="file" id="movieFile" accept="video/*" hidden>
-              <div class="upload-icon">⇧</div><strong>Drop your movie file here</strong><p>or <button class="inline-button" id="browseFile">browse files</button></p><small>MP4, MOV, MKV · File stays on this device in this prototype</small>
-              <div class="file-selected" id="fileSelected"></div>
-            </div>
-            <div class="link-field hidden" id="linkField"><label for="movieUrl">MOVIE URL</label><input id="movieUrl" type="url" placeholder="https://..."><small>Only sources you own or have permission to process.</small></div>
-            <div class="field"><label for="projectName">PROJECT NAME</label><input id="projectName" type="text" placeholder="e.g. The Silent City"></div>
-          </div>
-
-          <div class="form-panel">
-            <div class="panel-title"><span class="step-number">02</span><div><h3>Story settings</h3><p>Set the language and length of your recap.</p></div></div>
-            <div class="field"><label>RECAP LANGUAGE</label><div class="choice-grid"><button class="choice selected" data-choice="language" data-value="Burmese">မြန်မာ</button><button class="choice" data-choice="language" data-value="English">English</button></div></div>
-            <div class="field"><label>VIDEO LENGTH</label><div class="choice-grid"><button class="choice selected" data-choice="duration" data-value="1–3 minutes"><strong>Short recap</strong><small>1–3 minutes</small></button><button class="choice" data-choice="duration" data-value="5–10 minutes"><strong>Long recap</strong><small>5–10 minutes</small></button></div></div>
-            <div class="field"><label>VIDEO FORMAT</label><div class="format-option"><span class="phone-icon">▯</span><div><strong>Vertical video · 9:16</strong><small>1080 × 1920 · TikTok format</small></div><span class="check">✓</span></div></div>
-            <div class="field"><label>NARRATION</label><div class="format-option"><span class="voice-icon">♫</span><div><strong>AI-generated voice</strong><small>Voice selection will be added in the next milestone</small></div><span class="check">✓</span></div></div>
-            <button class="primary-button full" id="createProject">Prepare recap project <span>→</span></button>
-            <p class="form-footnote">Creating a project here does not start AI processing yet.</p>
-          </div>
-        </div>
-      </section>
-
+      <!-- ═══════════════════════════════ PROJECTS PAGE ═══════════════════════════════ -->
       <section class="page" id="page-projects">
-        <div class="page-title row-title"><div><div class="eyebrow muted">YOUR LIBRARY</div><h1>My projects</h1><p>All your recap projects in one place.</p></div><button class="primary-button" data-go="create">＋ New project</button></div>
-        <div class="filter-row"><button class="filter active">All projects</button><button class="filter">In progress</button><button class="filter">Ready</button><button class="filter">Drafts</button></div>
+        <div class="page-title row-title">
+          <div><div class="eyebrow muted">YOUR LIBRARY</div><h1>My projects</h1><p>All your recap projects in one place.</p></div>
+          <button class="primary-button" data-go="create">＋ New project</button>
+        </div>
+        <div class="filter-row">
+          <button class="filter active" data-filter="All projects">All projects</button>
+          <button class="filter" data-filter="Processing">In progress</button>
+          <button class="filter" data-filter="Ready">Ready</button>
+          <button class="filter" data-filter="Draft">Drafts</button>
+          <button class="filter" data-filter="Error">Errors</button>
+        </div>
         <div class="project-grid" id="allProjects"></div>
       </section>
 
-      <section class="page" id="page-settings">
-        <div class="page-title"><div class="eyebrow muted">PREFERENCES</div><h1>Settings</h1><p>Studio configuration and service connections.</p></div>
-        <div class="settings-panel"><div class="settings-row"><div><strong>Workspace</strong><p>Personal AI Recap Studio prototype</p></div><span class="pill draft">Local</span></div><div class="settings-row"><div><strong>AI script provider</strong><p>Not connected</p></div><span class="pill draft">Pending</span></div><div class="settings-row"><div><strong>AI voice provider</strong><p>Burmese and English voice support to be evaluated</p></div><span class="pill draft">Pending</span></div><div class="settings-row"><div><strong>Cloud storage</strong><p>Private object storage to be configured</p></div><span class="pill draft">Pending</span></div><div class="settings-row"><div><strong>DeepCut integration</strong><p>Requires separate licensing confirmation before cloud deployment.</p></div><span class="pill warning">Not connected</span></div></div>
+      <!-- ═══════════════════════════════ CREATE PAGE (WIZARD) ═══════════════════════════════ -->
+      <section class="page" id="page-create">
+        <!-- Step indicators -->
+        <div class="wizard-steps" id="wizardSteps">
+          <div class="wizard-step active" data-step="1"><span class="ws-num">1</span><span class="ws-label">Add Movie</span></div>
+          <div class="ws-line"></div>
+          <div class="wizard-step" data-step="2"><span class="ws-num">2</span><span class="ws-label">Settings</span></div>
+          <div class="ws-line"></div>
+          <div class="wizard-step" data-step="3"><span class="ws-num">3</span><span class="ws-label">Generate</span></div>
+          <div class="ws-line"></div>
+          <div class="wizard-step" data-step="4"><span class="ws-num">4</span><span class="ws-label">Export</span></div>
+        </div>
+
+        <!-- STEP 1: Add Movie -->
+        <div class="wizard-panel active" id="step-1">
+          <div class="page-title"><div class="eyebrow muted">STEP 1 OF 4</div><h1>Add your movie</h1><p>Upload a video file or provide a movie URL for reference.</p></div>
+          <div class="form-layout">
+            <div class="form-panel">
+              <div class="panel-title"><span class="step-number">01</span><div><h3>Choose your movie</h3><p>Upload a video file or provide a supported link.</p></div></div>
+              <div class="source-tabs">
+                <button class="source-tab selected" data-source="upload">Upload file</button>
+                <button class="source-tab" data-source="link">Movie link</button>
+              </div>
+              <div class="upload-zone" id="uploadZone">
+                <input type="file" id="movieFile" accept="video/*" hidden>
+                <div class="upload-icon">⇧</div>
+                <strong>Drop your movie file here</strong>
+                <p>or <button class="inline-button" id="browseFile">browse files</button></p>
+                <small>MP4, MOV, MKV · File stays on this device</small>
+                <div class="file-selected" id="fileSelected"></div>
+              </div>
+              <div class="link-field hidden" id="linkField">
+                <label for="movieUrl">MOVIE URL</label>
+                <input id="movieUrl" type="url" placeholder="https://...">
+                <small>Reference URL only — video must be uploaded for transcription.</small>
+              </div>
+              <div class="field">
+                <label for="projectName">PROJECT NAME</label>
+                <input id="projectName" type="text" placeholder="e.g. The Silent City">
+              </div>
+            </div>
+            <div class="form-panel step1-preview">
+              <div class="panel-title"><span class="step-number">ℹ</span><div><h3>How it works</h3><p>Your file is processed locally and sent to AI.</p></div></div>
+              <div class="how-steps">
+                <div class="how-step"><span class="how-num">1</span><div><strong>Upload video</strong><p>Your file is sent to AssemblyAI for transcription</p></div></div>
+                <div class="how-step"><span class="how-num">2</span><div><strong>AI transcribes</strong><p>Speech is converted to text with timing data</p></div></div>
+                <div class="how-step"><span class="how-num">3</span><div><strong>Script generated</strong><p>OpenRouter AI writes a cinematic recap script</p></div></div>
+                <div class="how-step"><span class="how-num">4</span><div><strong>Export ready</strong><p>Copy or download your script for narration</p></div></div>
+              </div>
+              <button class="primary-button full" id="step1Next">Continue to settings <span>→</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Story Settings -->
+        <div class="wizard-panel" id="step-2">
+          <div class="page-title"><div class="eyebrow muted">STEP 2 OF 4</div><h1>Story settings</h1><p>Configure the language, length, and style of your recap.</p></div>
+          <div class="form-layout">
+            <div class="form-panel">
+              <div class="panel-title"><span class="step-number">02</span><div><h3>Recap configuration</h3><p>Set the language and length of your story.</p></div></div>
+              <div class="field"><label>RECAP LANGUAGE</label>
+                <div class="choice-grid">
+                  <button class="choice selected" data-choice="language" data-value="Burmese">မြန်မာ</button>
+                  <button class="choice" data-choice="language" data-value="English">English</button>
+                </div>
+              </div>
+              <div class="field"><label>VIDEO LENGTH</label>
+                <div class="choice-grid">
+                  <button class="choice selected" data-choice="duration" data-value="1–3 minutes"><strong>Short recap</strong><small>1–3 minutes · 300–500 words</small></button>
+                  <button class="choice" data-choice="duration" data-value="5–10 minutes"><strong>Long recap</strong><small>5–10 minutes · 800–1200 words</small></button>
+                </div>
+              </div>
+              <div class="field"><label>VIDEO FORMAT</label>
+                <div class="format-option"><span class="phone-icon">▯</span><div><strong>Vertical video · 9:16</strong><small>1080 × 1920 · TikTok / Reels format</small></div><span class="check">✓</span></div>
+              </div>
+              <div class="field"><label>NARRATION</label>
+                <div class="format-option"><span class="voice-icon">♫</span><div><strong>AI-generated voice</strong><small>Voice selection coming in next milestone</small></div><span class="check">✓</span></div>
+              </div>
+            </div>
+            <div class="form-panel">
+              <div class="panel-title"><span class="step-number">🔑</span><div><h3>API key status</h3><p>Required for AI transcription and script generation.</p></div></div>
+              <div class="api-status-block" id="apiStatusBlock">
+                <div class="api-status-row" id="aaiStatus">
+                  <span class="api-status-icon">◉</span>
+                  <div><strong>AssemblyAI</strong><small id="aaiStatusText">Not configured</small></div>
+                  <span class="api-badge" id="aaiStatusBadge">Missing</span>
+                </div>
+                <div class="api-status-row" id="orStatus">
+                  <span class="api-status-icon">◉</span>
+                  <div><strong>OpenRouter</strong><small id="orStatusText">Not configured</small></div>
+                  <span class="api-badge" id="orStatusBadge">Missing</span>
+                </div>
+              </div>
+              <div class="skip-transcription-box" id="skipTranscriptionBox" style="display:none">
+                <div class="notice-sm">
+                  <span>ℹ</span>
+                  <div><strong>No AssemblyAI key?</strong><p>You can skip transcription and paste your own transcript or plot summary below.</p></div>
+                </div>
+                <div class="field">
+                  <label for="manualTranscript">MANUAL TRANSCRIPT / PLOT SUMMARY</label>
+                  <textarea id="manualTranscript" rows="6" placeholder="Paste your movie transcript or plot summary here..."></textarea>
+                </div>
+              </div>
+              <div class="step2-actions">
+                <button class="secondary-button" id="step2Back">← Back</button>
+                <button class="primary-button" id="step2Next">Continue to generate <span>→</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Generate Script -->
+        <div class="wizard-panel" id="step-3">
+          <div class="page-title"><div class="eyebrow muted">STEP 3 OF 4</div><h1>Generate script</h1><p>AI will transcribe your video and write a cinematic recap.</p></div>
+          <div class="generate-layout">
+            <!-- Progress block -->
+            <div class="form-panel generate-panel" id="generatePanel">
+              <div class="panel-title"><span class="step-number">03</span><div><h3>AI pipeline</h3><p>Multi-step processing with real-time progress.</p></div></div>
+
+              <!-- Pre-generation state -->
+              <div id="preGenState">
+                <div class="gen-info-row">
+                  <div class="gen-info-item"><span class="gen-info-label">PROJECT</span><span id="genProjectName">—</span></div>
+                  <div class="gen-info-item"><span class="gen-info-label">LANGUAGE</span><span id="genLanguage">—</span></div>
+                  <div class="gen-info-item"><span class="gen-info-label">LENGTH</span><span id="genDuration">—</span></div>
+                  <div class="gen-info-item"><span class="gen-info-label">SOURCE</span><span id="genSource">—</span></div>
+                </div>
+                <div class="pipeline-steps">
+                  <div class="pipeline-step" id="ps1"><span class="ps-icon">📤</span><div><strong>Upload video</strong><small>Send file to AssemblyAI</small></div><span class="ps-status">waiting</span></div>
+                  <div class="pipeline-step" id="ps2"><span class="ps-icon">🎙</span><div><strong>Transcribe audio</strong><small>Speech-to-text conversion</small></div><span class="ps-status">waiting</span></div>
+                  <div class="pipeline-step" id="ps3"><span class="ps-icon">🤖</span><div><strong>Generate script</strong><small>AI writes cinematic recap</small></div><span class="ps-status">waiting</span></div>
+                  <div class="pipeline-step" id="ps4"><span class="ps-icon">✅</span><div><strong>Script ready</strong><small>Review and export</small></div><span class="ps-status">waiting</span></div>
+                </div>
+                <div class="progress-track" id="progressTrack" style="display:none">
+                  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+                  <div class="progress-label" id="progressLabel">Starting...</div>
+                </div>
+                <div class="gen-actions">
+                  <button class="secondary-button" id="step3Back">← Back</button>
+                  <button class="primary-button" id="generateBtn">✦ Generate script <span>→</span></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Script output -->
+            <div class="form-panel script-panel" id="scriptPanel">
+              <div class="panel-title"><span class="step-number">✎</span><div><h3>Generated script</h3><p>Review and edit your AI-generated recap.</p></div></div>
+              <div id="scriptEmpty" class="script-placeholder">
+                <span class="script-placeholder-icon">📝</span>
+                <strong>Your script will appear here</strong>
+                <small>Click "Generate script" to begin</small>
+              </div>
+              <div id="scriptContent" style="display:none">
+                <div class="script-meta">
+                  <span id="scriptCharCount">0 characters</span>
+                  <span id="scriptWordCount">0 words</span>
+                  <span id="scriptEstDuration">~0 min</span>
+                </div>
+                <textarea class="script-textarea" id="scriptTextarea" rows="18" placeholder="Script will appear here..."></textarea>
+                <div class="script-actions">
+                  <button class="secondary-button" id="step3Next">Continue to export <span>→</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: Export -->
+        <div class="wizard-panel" id="step-4">
+          <div class="page-title"><div class="eyebrow muted">STEP 4 OF 4</div><h1>Export your script</h1><p>Your recap script is ready. Copy or download it.</p></div>
+          <div class="form-layout">
+            <div class="form-panel">
+              <div class="panel-title"><span class="step-number">04</span><div><h3>Your script</h3><p>Final recap ready for narration.</p></div></div>
+              <div class="export-meta-row">
+                <div class="export-meta-item"><span class="stat-icon green" style="width:22px;height:22px;font-size:12px">▶</span><div><strong id="exportProjectName">—</strong><small id="exportMeta">—</small></div></div>
+                <span class="pill ready">Ready</span>
+              </div>
+              <div class="script-meta" style="margin-bottom:12px">
+                <span id="exportCharCount">0 characters</span>
+                <span id="exportWordCount">0 words</span>
+                <span id="exportEstDuration">~0 min</span>
+              </div>
+              <textarea class="script-textarea" id="exportTextarea" rows="16" readonly></textarea>
+              <div class="export-actions">
+                <button class="export-btn" id="copyScriptBtn">📋 Copy script</button>
+                <button class="export-btn primary-export" id="downloadScriptBtn">⬇ Download .txt</button>
+              </div>
+            </div>
+            <div class="form-panel">
+              <div class="panel-title"><span class="step-number">✦</span><div><h3>What's next</h3><p>Use your script for narration.</p></div></div>
+              <div class="next-steps-list">
+                <div class="next-step-item"><span class="next-step-num">1</span><div><strong>Record narration</strong><p>Use your script with a text-to-speech tool or record yourself</p></div></div>
+                <div class="next-step-item"><span class="next-step-num">2</span><div><strong>Add visuals</strong><p>Pair your narration with movie clips in a video editor</p></div></div>
+                <div class="next-step-item"><span class="next-step-num">3</span><div><strong>Export 9:16</strong><p>Export as vertical video for TikTok, Reels, or Shorts</p></div></div>
+              </div>
+              <div class="export-nav-actions">
+                <button class="secondary-button" id="step4Back">← Edit script</button>
+                <button class="primary-button" id="finishProject">Done — View projects <span>→</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
+
+      <!-- ═══════════════════════════════ SETTINGS PAGE ═══════════════════════════════ -->
+      <section class="page" id="page-settings">
+        <div class="page-title"><div class="eyebrow muted">PREFERENCES</div><h1>Settings</h1><p>Configure your API keys and studio preferences.</p></div>
+
+        <!-- API Keys Section (prominent) -->
+        <div class="settings-section-title">🔑 API Connections <span class="settings-required-badge">Required for AI features</span></div>
+        <div class="settings-panel settings-api-panel">
+          <div class="settings-row settings-row-stack">
+            <div class="settings-row-header">
+              <div><strong>AssemblyAI API Key</strong><p>Used for video transcription. Get a free key at <a href="https://www.assemblyai.com" target="_blank" rel="noopener">assemblyai.com</a></p></div>
+              <span class="pill" id="aaiKeyPill">Not set</span>
+            </div>
+            <div class="api-key-input-row">
+              <div class="api-key-wrap">
+                <input type="password" id="aaiKeyInput" class="api-key-input" placeholder="Enter your AssemblyAI API key">
+                <button class="toggle-key-btn" data-target="aaiKeyInput" aria-label="Show/hide key">👁</button>
+              </div>
+              <button class="test-key-btn" id="testAaiKey">Test</button>
+            </div>
+            <div class="key-test-result" id="aaiTestResult"></div>
+          </div>
+
+          <div class="settings-row settings-row-stack">
+            <div class="settings-row-header">
+              <div><strong>OpenRouter API Key</strong><p>Used for AI script generation. Get a key at <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a></p></div>
+              <span class="pill" id="orKeyPill">Not set</span>
+            </div>
+            <div class="api-key-input-row">
+              <div class="api-key-wrap">
+                <input type="password" id="orKeyInput" class="api-key-input" placeholder="Enter your OpenRouter API key">
+                <button class="toggle-key-btn" data-target="orKeyInput" aria-label="Show/hide key">👁</button>
+              </div>
+              <button class="test-key-btn" id="testOrKey">Test</button>
+            </div>
+            <div class="key-test-result" id="orTestResult"></div>
+          </div>
+
+          <div class="settings-row settings-row-stack">
+            <div class="settings-row-header">
+              <div><strong>OpenRouter Model</strong><p>The AI model used for script generation</p></div>
+            </div>
+            <div class="model-selector-row">
+              <select id="modelPreset" class="model-select">
+                <option value="meta-llama/llama-3.1-8b-instruct:free">Llama 3.1 8B (Free)</option>
+                <option value="meta-llama/llama-3.1-70b-instruct:free">Llama 3.1 70B (Free)</option>
+                <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
+                <option value="google/gemma-2-9b-it:free">Gemma 2 9B (Free)</option>
+                <option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
+                <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+                <option value="custom">Custom model...</option>
+              </select>
+              <input type="text" id="modelCustom" class="api-key-input hidden" placeholder="e.g. openai/gpt-4o">
+            </div>
+          </div>
+
+          <div class="settings-row" style="border-bottom:0;padding-bottom:0;justify-content:flex-end;gap:10px">
+            <button class="secondary-button" id="clearKeysBtn">Clear all keys</button>
+            <button class="primary-button" id="saveSettingsBtn">Save settings</button>
+          </div>
+        </div>
+
+        <!-- Narration Language -->
+        <div class="settings-section-title" style="margin-top:28px">🌐 Studio Preferences</div>
+        <div class="settings-panel">
+          <div class="settings-row">
+            <div><strong>Default narration language</strong><p>Language used when creating new projects</p></div>
+            <div class="choice-grid" style="width:200px">
+              <button class="choice selected" data-choice="defaultLang" data-value="Burmese" style="padding:8px">မြန်မာ</button>
+              <button class="choice" data-choice="defaultLang" data-value="English" style="padding:8px">English</button>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div><strong>Workspace</strong><p>Personal AI Recap Studio</p></div>
+            <span class="pill draft">Local</span>
+          </div>
+          <div class="settings-row">
+            <div><strong>AI voice provider</strong><p>Burmese and English voice support — coming soon</p></div>
+            <span class="pill draft">Pending</span>
+          </div>
+          <div class="settings-row" style="border-bottom:0">
+            <div><strong>Cloud storage</strong><p>Private object storage to be configured</p></div>
+            <span class="pill draft">Pending</span>
+          </div>
+        </div>
+
+        <!-- Data management -->
+        <div class="settings-section-title" style="margin-top:28px">🗂 Data & Storage</div>
+        <div class="settings-panel">
+          <div class="settings-row">
+            <div><strong>Local projects</strong><p id="localDataSize">Calculating...</p></div>
+            <button class="secondary-button" id="exportDataBtn">Export data</button>
+          </div>
+          <div class="settings-row" style="border-bottom:0">
+            <div><strong>Clear all data</strong><p>Delete all projects and settings from localStorage</p></div>
+            <button class="danger-button" id="clearAllDataBtn">Clear all data</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════ PROJECT VIEWER ═══════════════════════════════ -->
+      <section class="page" id="page-project-view">
+        <div class="page-title row-title">
+          <div>
+            <div class="eyebrow muted">PROJECT DETAIL</div>
+            <h1 id="pvProjectName">Project</h1>
+            <p id="pvProjectMeta">—</p>
+          </div>
+          <div style="display:flex;gap:9px;align-items:center">
+            <span class="pill" id="pvStatusPill">Draft</span>
+            <button class="secondary-button" id="pvBack">← Back</button>
+          </div>
+        </div>
+        <div class="form-layout">
+          <div class="form-panel" style="flex:1.5">
+            <div class="panel-title"><span class="step-number">✎</span><div><h3>Script</h3><p>View and edit your generated recap.</p></div></div>
+            <div class="script-meta" style="margin-bottom:12px">
+              <span id="pvCharCount">—</span>
+              <span id="pvWordCount">—</span>
+              <span id="pvEstDuration">—</span>
+            </div>
+            <textarea class="script-textarea" id="pvScriptTextarea" rows="20" placeholder="No script generated yet. Click 'Generate script' to create one."></textarea>
+            <div class="export-actions" style="margin-top:14px">
+              <button class="export-btn" id="pvCopyBtn">📋 Copy</button>
+              <button class="export-btn primary-export" id="pvDownloadBtn">⬇ Download</button>
+              <button class="export-btn" id="pvSaveBtn">💾 Save edits</button>
+            </div>
+          </div>
+          <div class="form-panel">
+            <div class="panel-title"><span class="step-number">ℹ</span><div><h3>Project info</h3><p>Details and transcript.</p></div></div>
+            <div class="pv-info-grid">
+              <div class="pv-info-row"><span>Language</span><strong id="pvLang">—</strong></div>
+              <div class="pv-info-row"><span>Duration</span><strong id="pvDuration">—</strong></div>
+              <div class="pv-info-row"><span>Source</span><strong id="pvSource">—</strong></div>
+              <div class="pv-info-row"><span>Created</span><strong id="pvCreated">—</strong></div>
+              <div class="pv-info-row"><span>Updated</span><strong id="pvUpdated">—</strong></div>
+            </div>
+            <div class="field" style="margin-top:16px">
+              <label>TRANSCRIPT PREVIEW</label>
+              <div class="transcript-preview" id="pvTranscriptPreview">No transcript available.</div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:9px">
+              <button class="danger-button" id="pvDeleteBtn">Delete project</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
+
   <div class="toast" id="toast"></div>
+
+  <!-- Confirm dialog -->
+  <div class="confirm-overlay hidden" id="confirmOverlay">
+    <div class="confirm-dialog">
+      <strong id="confirmTitle">Are you sure?</strong>
+      <p id="confirmMsg">This action cannot be undone.</p>
+      <div class="confirm-actions">
+        <button class="secondary-button" id="confirmNo">Cancel</button>
+        <button class="danger-button" id="confirmYes">Confirm</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
